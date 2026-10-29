@@ -28,6 +28,13 @@ a:hover {
   border-bottom: 3px solid #4a90d9;
 }
 
+.logo {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
 #main-nav ul {
   display: flex;
   gap: 24px;
