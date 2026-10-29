@@ -1,1 +1,50 @@
+<!DOCTYPE html>
+<head>
+  <title>Staff Login</title>
+</head>
+<body>
+  <header id="site-header">
+    <div class="logo">Stanley Cloud Service</div>
+    <nav id="main-nav">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shipments.html">Shipments</a></li> 
+        <li><a href="admin/">Admin panel</a></li>
+        <li><a href="backup/">Backups</a></li>
+      </ul>
+    </nav>
+  </header>
 
+  <main id="content">
+
+    <section id="portal-info">
+      <h1>Employee Cloud Portal</h1>
+      <p>Access payroll, shipment records, and the customer database. Use your company credentials.</p>
+
+    </section>
+
+    <section id="login-box">
+      <h2>Sign in</h2>
+
+      <form id="login-form" action="/login" method="POST">
+        <label for="username">Company ID</label>
+        <input type="text" id="username" name="username" placeholder="Username">
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Password">
+
+        <button type="submit" id="login-button">Sign in</button>
+      </form>
+
+      <a href="forgot-password.html">Forgot UserID/Password</a>
+      
+    </section>
+
+  </main>
+
+  <footer id="site-footer">
+    <p>&copy; 2009 Stanley Cloud.</p>
+  </footer>
+
+</body>
+</html>
