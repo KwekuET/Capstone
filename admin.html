@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header id="site-header">
+    <div class="logo">Corvane Cloud Systems</div>
+    <nav id="main-nav">
+      <ul>
+        <li><a href="dashboard">Dashboard</a></li>
+        <li><a href="billing.html">Billing</a></li>
+        <li><a href="admin.html">Admin panel</a></li>
+        <li><a href="client.html">Client Servers</a></li>
+        <li><a href="logout">Sign out</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="page">
+    <h1>Admin Panel</h1>
+    <p class="note">Portal user accounts. Changes are applied at the next sync (every 15 minutes).</p>
+
+    <table>
+      <tr><th>Company ID</th><th>Role</th><th>Last sign-in</th><th>MFA</th></tr>
+      <tr><td>portaladmin</td><td>Administrator</td><td>2026-11-03 08:12</td><td class="status-bad">Off</td></tr>
+      <tr><td>svc_backup</td><td>Service account</td><td>2026-11-12 02:00</td><td class="status-bad">Off</td></tr>
+      <tr><td>testuser</td><td>Staff (test)</td><td>2025-06-19 16:40</td><td class="status-bad">Off</td></tr>
+      <tr><td>dwhitfield</td><td>Manager</td><td>2026-11-11 09:31</td><td class="status-ok">On</td></tr>
+      <tr><td>tbecker</td><td>IT Support</td><td>2026-11-12 07:55</td><td class="status-ok">On</td></tr>
+    </table>
+
+    <h2>Exports</h2>
+    <ul>
+      <li><a href="internal/users_export.csv">users_export.csv</a></li>
+    </ul>
+  </main>
+
+  <footer id="site-footer">
+    <p>&copy; 2016 Corvane Cloud Systems.</p>
+  </footer>
+
+</body>
+</html>

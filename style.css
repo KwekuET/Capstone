@@ -147,4 +147,146 @@ a:hover {
   font-size: 12px;
   color: #888780;
 }
+
+/* ---------- Added for the inside pages ---------- */
+
+.error {
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: #8a1c1c;
+  background-color: #fdecea;
+  border: 1px solid #f3b6b0;
+  border-radius: 5px;
+}
+
+.success {
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: #1d5c2e;
+  background-color: #e6f4ea;
+  border: 1px solid #a8d5b5;
+  border-radius: 5px;
+}
+
+#page {
+  max-width: 900px;
+  margin: 48px auto;
+  padding: 36px 40px;
+  background-color: #ffffff;
+  border: 1px solid #c9d6e3;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(31, 58, 92, 0.08);
+}
+
+#page h1 {
+  margin: 0 0 8px;
+  font-size: 26px;
+  font-weight: 600;
+  color: #1f3a5c;
+}
+
+#page h2 {
+  margin: 28px 0 10px;
+  font-size: 19px;
+  font-weight: 600;
+  color: #1f3a5c;
+}
+
+.note {
+  margin: 0 0 20px;
+  font-size: 14px;
+  color: #5f5e5a;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th,
+td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e1e8ef;
+}
+
+th {
+  color: #ffffff;
+  background-color: #1f3a5c;
+  font-weight: 600;
+}
+
+tr:nth-child(even) td {
+  background-color: #f7fafd;
+}
+
+.status-ok {
+  color: #1d5c2e;
+  font-weight: 600;
+}
+
+.status-bad {
+  color: #8a1c1c;
+  font-weight: 600;
+}
+
+#search-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#search-form input,
+#page form input {
+  padding: 10px 11px;
+  font-size: 14px;
+  font-family: inherit;
+  border: 1px solid #a9b9c9;
+  border-radius: 5px;
+}
+
+#search-form input {
+  flex: 1;
+}
+
+#page form label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #444441;
+}
+
+#page form input {
+  display: block;
+  width: 100%;
+  max-width: 380px;
+  margin-bottom: 16px;
+}
+
+.button {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #2b6cb0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #1f3a5c;
+}
+
+#page #search-form input {
+  max-width: none;
+  margin-bottom: 0;
+}
+
+#search-form {
+  align-items: center;
 }

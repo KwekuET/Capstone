@@ -1,15 +1,18 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Staff Login</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- TODO: remove test account before go-live (testuser / Test@1234) -->
   <header id="site-header">
     <div class="logo">Corvane Cloud Systems</div>
     <nav id="main-nav">
       <ul>
         <li><a href="index.html">Home</a></li>
-        <li><a href="billing.hmtl">Billing</a></li> 
+        <li><a href="billing.html">Billing</a></li>
         <li><a href="admin.html">Admin panel</a></li>
         <li><a href="client.html">Client Servers</a></li>
       </ul>
@@ -21,11 +24,11 @@
     <section id="portal-info">
       <h1>Employee Cloud Portal</h1>
       <p>Access payroll, shipment records, and the customer database. Use your company credentials.</p>
-
     </section>
 
     <section id="login-box">
       <h2>Sign in</h2>
+      {{MESSAGE}}
 
       <form id="login-form" action="/login" method="POST">
         <label for="username">Company ID</label>
@@ -38,7 +41,6 @@
       </form>
 
       <a href="forgot-password.html">Forgot UserID/Password</a>
-      
     </section>
 
   </main>

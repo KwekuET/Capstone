@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header id="site-header">
+    <div class="logo">Corvane Cloud Systems</div>
+    <nav id="main-nav">
+      <ul>
+        <li><a href="dashboard">Dashboard</a></li>
+        <li><a href="billing.html">Billing</a></li>
+        <li><a href="admin.html">Admin panel</a></li>
+        <li><a href="client.html">Client Servers</a></li>
+        <li><a href="logout">Sign out</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="page">
+    <h1>Employee Directory</h1>
+    <p class="note">Welcome back. Contact IT (ext. 4410) if your details are out of date.</p>
+
+    <form id="search-form" method="GET" action="dashboard">
+      <input type="text" name="q" value="{{SEARCH}}" placeholder="Search by name, title or email" aria-label="Search employees">
+      <button type="submit" class="button">Search</button>
+    </form>
+
+    <table>
+      <tr><th>ID</th><th>Name</th><th>Title</th><th>Email</th><th>Phone</th></tr>
+      {{ROWS}}
+    </table>
+
+    <h2>Shared Files</h2>
+    <ul>
+      <li><a href="internal/payroll_2026.csv">payroll_2026.csv</a></li>
+      <li><a href="internal/shipments_q3.csv">shipments_q3.csv</a></li>
+      <li><a href="internal/vpn_setup.txt">vpn_setup.txt</a></li>
+    </ul>
+  </main>
+
+  <footer id="site-footer">
+    <p>&copy; 2016 Corvane Cloud Systems.</p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Client Servers</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header id="site-header">
+    <div class="logo">Corvane Cloud Systems</div>
+    <nav id="main-nav">
+      <ul>
+        <li><a href="dashboard">Dashboard</a></li>
+        <li><a href="billing.html">Billing</a></li>
+        <li><a href="admin.html">Admin panel</a></li>
+        <li><a href="client.html">Client Servers</a></li>
+        <li><a href="logout">Sign out</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="page">
+    <h1>Client Servers</h1>
+    <p class="note">Root credentials are stored in the team vault. Do not share outside IT.</p>
+
+    <table>
+      <tr><th>Hostname</th><th>Client</th><th>Private IP</th><th>OS</th><th>Status</th></tr>
+      <tr><td>hpd-web-01</td><td>Harbor Point Dental</td><td>10.20.4.11</td><td>Ubuntu 18.04</td><td class="status-ok">Running</td></tr>
+      <tr><td>mbf-db-01</td><td>Millbrook Freight</td><td>10.20.4.23</td><td>CentOS 7</td><td class="status-ok">Running</td></tr>
+      <tr><td>slc-files-02</td><td>Sutter &amp; Lane CPAs</td><td>10.20.5.8</td><td>Windows Server 2012</td><td class="status-bad">Stopped</td></tr>
+      <tr><td>bwo-shop-01</td><td>Bluewater Outfitters</td><td>10.20.5.31</td><td>Ubuntu 20.04</td><td class="status-ok">Running</td></tr>
+      <tr><td>ngc-ehr-01</td><td>Northgate Clinics</td><td>10.20.6.4</td><td>Ubuntu 18.04</td><td class="status-ok">Running</td></tr>
+    </table>
+  </main>
+
+  <footer id="site-footer">
+    <p>&copy; 2016 Corvane Cloud Systems.</p>
+  </footer>
+
+</body>
+</html>
