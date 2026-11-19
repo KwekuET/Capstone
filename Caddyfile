@@ -1,11 +1,11 @@
 # Caddy gets a free Let's Encrypt certificate and renews it automatically.
 # Replace portal.yourdomain.com with your real domain.
 
-portal.yourdomain.com {
-	reverse_proxy localhost:3000
+corvane-portal.duckdns.org {
+	reverse_proxy 127.0.0.1:3000
 }
 
 # Scanners that visit by IP address (no domain) over plain HTTP still reach the honeypot
 :80 {
-	reverse_proxy localhost:3000
+	reverse_proxy 127.0.0.1:3000
 }
