@@ -165,7 +165,6 @@ const dbBackup =
 
 const BACKUP_FILES = { "db_backup.sql": dbBackup, "employees.csv": employeesCsv };
 
-app.get("/backup", (req, res) => res.redirect("/backup/"));
 app.get("/backup/", (req, res) => {
   log(req, "bait", { bait: "backup_listing", step: 3 });
   const links = Object.keys(BACKUP_FILES).map(f => `<li><a href="/backup/${f}">${f}</a></li>`).join("");
