@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Billing</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header id="site-header">
+    <div class="logo">Corvane Cloud Systems</div>
+    <nav id="main-nav">
+      <ul>
+        <li><a href="dashboard">Dashboard</a></li>
+        <li><a href="billing.html">Billing</a></li>
+        <li><a href="admin.html">Admin panel</a></li>
+        <li><a href="client.html">Client Servers</a></li>
+        <li><a href="logout">Sign out</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="page">
+    <h1>Billing</h1>
+    <p class="note">Open invoices for hosted clients.</p>
+
+    <table>
+      <tr><th>Invoice</th><th>Client</th><th>Plan</th><th>Amount</th><th>Status</th></tr>
+      <tr><td>INV-20481</td><td>Harbor Point Dental</td><td>Business Cloud</td><td>$1,240.00</td><td class="status-ok">Paid</td></tr>
+      <tr><td>INV-20482</td><td>Millbrook Freight</td><td>Enterprise</td><td>$4,870.00</td><td class="status-bad">Overdue</td></tr>
+      <tr><td>INV-20483</td><td>Sutter &amp; Lane CPAs</td><td>Business Cloud</td><td>$1,240.00</td><td class="status-ok">Paid</td></tr>
+      <tr><td>INV-20484</td><td>Bluewater Outfitters</td><td>Starter</td><td>$310.00</td><td class="status-bad">Overdue</td></tr>
+      <tr><td>INV-20485</td><td>Northgate Clinics</td><td>Enterprise</td><td>$5,150.00</td><td class="status-ok">Paid</td></tr>
+    </table>
+  </main>
+
+  <footer id="site-footer">
+    <p>&copy; 2016 Corvane Cloud Systems.</p>
+  </footer>
+
+</body>
+</html>
