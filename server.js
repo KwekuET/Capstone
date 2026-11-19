@@ -1,30 +1,18 @@
-// Web honeypot: a fake company employee portal (Corvane Cloud Systems) that logs everything visitors do.
-// Everything on this site is FAKE. There is no real data on this server.
-
 const express = require("express");
 const fs = require("fs");
 
 const app = express();
 
-// Read request bodies of any kind, so every POST body gets logged
-app.use(express.urlencoded({ extended: false, limit: "20kb" }));
-app.use(express.json({ limit: "20kb" }));
-app.use(express.text({ type: () => true, limit: "20kb" }));
-
 const fake = JSON.parse(fs.readFileSync(__dirname + "/fake-data.json", "utf8"));
-
-// ---------- LOGGING ----------
 
 fs.mkdirSync(__dirname + "/logs", { recursive: true });
 const ACCESS_LOG = __dirname + "/logs/access.log";
 const ERROR_LOG = __dirname + "/logs/error.log";
 
-// Shorten long values so attackers can't flood the log
 function cut(value) {
   return String(value === undefined || value === null ? "" : value).slice(0, 1000);
 }
 
-// The visitor's real IP. Behind Caddy (HTTPS), it's in X-Forwarded-For.
 function clientIp(req) {
   const ip = (req.socket.remoteAddress || "").replace("::ffff:", "");
   const forwarded = req.headers["x-forwarded-for"];
@@ -34,14 +22,12 @@ function clientIp(req) {
   return ip;
 }
 
-// All headers (attacks like Log4Shell hide in headers, not just the URL)
 function headersOf(req) {
   const headers = {};
   Object.keys(req.headers).slice(0, 40).forEach(name => (headers[name] = cut(req.headers[name])));
   return headers;
 }
 
-// One line of JSON per event
 function log(req, type, extra) {
   const entry = {
     time: new Date().toISOString(),
@@ -55,7 +41,6 @@ function log(req, type, extra) {
   fs.appendFileSync(ACCESS_LOG, JSON.stringify(entry) + "\n");
 }
 
-// Every request is logged once it finishes, with its status code, headers and body
 app.use((req, res, next) => {
   res.on("finish", () => {
     let body = req.body;
@@ -65,15 +50,15 @@ app.use((req, res, next) => {
   next();
 });
 
-// ---------- HTML PAGES ----------
+app.use(express.urlencoded({ extended: false, limit: "20kb" }));
+app.use(express.json({ limit: "20kb" }));
+app.use(express.text({ type: () => true, limit: "20kb" }));
 
-// Make text safe to put in a page (injected scripts are shown, not run)
 function safe(text) {
   return String(text).replace(/[&<>"']/g, c =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 }
 
-// Read an HTML file and fill in its {{PLACEHOLDERS}}
 function render(file, values = {}) {
   let html = fs.readFileSync(__dirname + "/" + file, "utf8");
   for (const key in values) html = html.split("{{" + key + "}}").join(values[key]);
@@ -84,16 +69,12 @@ const errorBox = text => `<p class="error">${text}</p>`;
 
 app.get("/style.css", (req, res) => res.sendFile(__dirname + "/style.css"));
 
-// ---------- HONEYTOKENS ----------
-// Each fake credential is planted in ONE place, so a login with it shows which clue was followed.
-
 const HONEYTOKENS = [
-  { username: "testuser", password: "Test@1234", source: "html_comment" },        // breadcrumb 2 (index.html)
-  { username: "svc_backup", password: "Backup2026!", source: "db_backup.sql" },   // breadcrumb 3
-  { username: "portaladmin", password: "Cv4ne-Adm1n-26", source: ".env" }         // breadcrumb 4
+  { username: "testuser", password: "Test@1234", source: "html_comment" },
+  { username: "svc_backup", password: "Backup2026!", source: "db_backup.sql" },
+  { username: "portaladmin", password: "Cv4ne-Adm1n-26", source: ".env" }
 ];
 
-// Weak default login that brute-force bots might guess
 const WEAK_LOGINS = [{ username: "admin", password: "admin123", source: "weak_default" }];
 
 const SESSION = "session=emp_7c41d9";
@@ -101,8 +82,6 @@ const SESSION = "session=emp_7c41d9";
 function isLoggedIn(req) {
   return (req.headers.cookie || "").includes(SESSION);
 }
-
-// ---------- LOGIN PORTAL (breadcrumb 5) ----------
 
 app.get(["/", "/index.html", "/login"], (req, res) => res.send(render("index.html")));
 
@@ -118,7 +97,7 @@ function handleLogin(req, res) {
     username: username,
     password: password,
     success: Boolean(match),
-    honeytoken: token ? token.source : ""   // which planted clue this username came from
+    honeytoken: token ? token.source : ""
   });
 
   if (match && ["/", "/login", "/index.html"].includes(req.path)) {
@@ -130,7 +109,7 @@ function handleLogin(req, res) {
 
 app.post(["/", "/index.html", "/login"], handleLogin);
 
-// Forgot password: attackers use these forms to check which accounts exist
+
 app.get(["/forgot-password", "/forgot-password.html"], (req, res) => res.send(render("forgot-password.html")));
 app.post(["/forgot-password", "/forgot-password.html"], (req, res) => {
   const account = typeof req.body === "object" ? cut(req.body.account) : "";
@@ -140,13 +119,10 @@ app.post(["/forgot-password", "/forgot-password.html"], (req, res) => {
   }));
 });
 
-// ---------- INSIDE THE PORTAL (what attackers reach after logging in) ----------
-
 app.get(["/dashboard", "/dashboard.html"], (req, res) => {
   if (!isLoggedIn(req)) return res.redirect("/");
 
-  // Search box: a target for SQL injection and script injection
-  const search = typeof req.query.q === "string" ? cut(req.query.q) : "";
+const search = typeof req.query.q === "string" ? cut(req.query.q) : "";
   if (search) log(req, "search", { query: search });
 
   const rows = fake.employees
@@ -161,7 +137,6 @@ app.get(["/dashboard", "/dashboard.html"], (req, res) => {
   }));
 });
 
-// Admin panel, billing and client servers: only after login
 ["admin.html", "billing.html", "client.html"].forEach(file => {
   app.get("/" + file, (req, res) => {
     if (!isLoggedIn(req)) return res.redirect("/");
@@ -174,15 +149,11 @@ app.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
-// ---------- BREADCRUMB TRAIL ----------
-
-// Breadcrumb 1: robots.txt "hides" the interesting folders
 app.get("/robots.txt", (req, res) => {
   log(req, "bait", { bait: "robots.txt", step: 1 });
   res.type("text/plain").send("User-agent: *\nDisallow: /admin\nDisallow: /backup/\nDisallow: /internal/\n");
 });
 
-// Breadcrumb 3: backup files (folder listing + files)
 const employeesCsv = "id,name,title,email,phone,salary\n" +
   fake.employees.map(e => [e.id, e.name, e.title, e.email, e.phone, e.salary].join(",")).join("\n") + "\n";
 
@@ -207,7 +178,6 @@ Object.keys(BACKUP_FILES).forEach(file => {
   });
 });
 
-// Breadcrumb 4: .env file with fake database + admin credentials
 app.get("/.env", (req, res) => {
   log(req, "bait", { bait: ".env", step: 4 });
   res.type("text/plain").send(
@@ -216,7 +186,6 @@ app.get("/.env", (req, res) => {
     "ADMIN_USER=portaladmin\nADMIN_PASSWORD=Cv4ne-Adm1n-26\n");
 });
 
-// /internal files: only after login (linked from the dashboard and admin panel)
 const INTERNAL_FILES = {
   "payroll_2026.csv": employeesCsv,
   "shipments_q3.csv": "shipment_id,client,destination,status\nSH-88120,Millbrook Freight,Columbus OH,Delivered\n" +
@@ -233,18 +202,12 @@ Object.keys(INTERNAL_FILES).forEach(file => {
   });
 });
 
-// ---------- COMMON TARGET PATHS (technology probing) ----------
-
-// Fake admin / WordPress / phpMyAdmin logins that show the same login page
 const ADMIN_PATHS = ["/admin", "/administrator", "/wp-admin", "/wp-login.php", "/phpmyadmin", "/admin.php"];
 app.get(ADMIN_PATHS, (req, res) => res.send(render("index.html")));
 app.post(ADMIN_PATHS, handleLogin);
 
-// ---------- EVERYTHING ELSE ----------
-
 app.use((req, res) => res.status(404).send(render("404.html")));
 
-// Error log: anything that crashes a request (bad JSON, too-large bodies, ...)
 app.use((err, req, res, next) => {
   fs.appendFileSync(ERROR_LOG, JSON.stringify({
     time: new Date().toISOString(), ip: clientIp(req), path: cut(req.originalUrl), error: cut(err.message)
@@ -253,4 +216,4 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("Honeypot running on port " + PORT));
+app.listen(PORT, "127.0.0.1", () => console.log("Honeypot running on port " + PORT));
