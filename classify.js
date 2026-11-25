@@ -1,22 +1,12 @@
-// classify.js — rule-based labeling of honeypot traffic.
-// Usage: node classify.js        (reads logs/access.log, writes results/)
-// Labels: mass_scanning, content_discovery, tech_probing, benign_crawler, site_visit, unknown
-
 const fs = require("fs");
 
-// Your own IPs (your test visits are not attacks). Add more, comma-separated, with MY_IPS=...
 const MY_IPS = ["71.31.239.158", "127.0.0.1", "::1"]
   .concat((process.env.MY_IPS || "").split(",").map(s => s.trim()).filter(Boolean));
 
-// ---------- RULES ----------
-
-// Known, self-identified crawlers (user agents can be faked, so this means "claims to be")
 const CRAWLER_UA = /(ClaudeBot|Claude-User|Googlebot|bingbot|DuckDuckBot|YandexBot|Baiduspider|Applebot|GPTBot|OAI-SearchBot|PerplexityBot|AhrefsBot|SemrushBot|MJ12bot|DotBot|PetalBot|facebookexternalhit|Twitterbot|LinkedInBot)/i;
 
-// Scanner tools that name themselves
 const SCANNER_UA = /(zgrab|masscan|nmap|censys|expanse|paloalto|internet-measurement|l9explore|l9tcpid|httpx|nuclei|zmap|shodan|netcraft|ModatScanner|Go-http-client|python-requests|python-urllib|aiohttp|curl|wget|libwww|okhttp|Java\/|fasthttp)/i;
 
-// Tech probing: software this site does NOT run (it's Node, so any .php is a probe)
 const TECH_PATHS = [
   /\.php(\?|$|\/)/i, /\/wp-/i, /wordpress/i, /xmlrpc/i, /phpmyadmin/i, /\/pma\b/i,
   /\/cgi-bin/i, /\/actuator/i, /\/solr/i, /\/vendor\/phpunit/i, /\/boaform/i, /\/HNAP1/i,
@@ -26,7 +16,6 @@ const TECH_PATHS = [
   /\/developmentserver/i, /\/sdk\b/i, /\/ReportServer/i, /\/Telerik/i
 ];
 
-// Content discovery: hunting for hidden/sensitive files and folders
 const DISCOVERY_PATHS = [
   /\/\.env/i, /\/\.git/i, /\/\.svn/i, /\/\.aws/i, /\/\.ssh/i, /\/\.DS_Store/i, /\/\.htaccess/i,
   /\/\.vscode/i, /\/\.idea/i, /\/backup/i, /\/internal/i, /\/robots\.txt/i, /\/sitemap\.xml/i,
@@ -39,8 +28,6 @@ const pathOnly = p => (p || "").split("?")[0];
 const SITE_PAGES = new Set(["/", "/index.html", "/login", "/style.css", "/favicon.ico", "/forgot-password",
   "/forgot-password.html", "/dashboard", "/dashboard.html", "/admin.html", "/billing.html", "/client.html", "/logout"]);
 
-// ---------- READ LOG ----------
-
 const lines = fs.readFileSync(__dirname + "/logs/access.log", "utf8").split("\n").filter(Boolean);
 const all = [];
 let bad = 0;
@@ -49,7 +36,6 @@ for (const line of lines) {
 }
 const requests = all.filter(e => e.type === "request" && !MY_IPS.includes(e.ip));
 
-// Per-IP behavior (content discovery is often a burst of many paths, mostly 404s)
 const perIp = {};
 for (const r of requests) {
   const s = (perIp[r.ip] = perIp[r.ip] || { total: 0, paths: new Set(), notFound: 0 });
@@ -59,8 +45,6 @@ const isBurstIp = ip => {
   const s = perIp[ip];
   return s.paths.size >= 8 && s.notFound / s.total >= 0.5;
 };
-
-// ---------- LABEL ----------
 
 function label(r) {
   const p = pathOnly(r.path);
@@ -90,8 +74,6 @@ const labeled = requests.map(r => {
   };
 });
 
-// ---------- BREADCRUMB DEPTH (how far each IP followed the trail) ----------
-
 const depth = {};
 for (const e of all) {
   if (MY_IPS.includes(e.ip)) continue;
@@ -99,8 +81,6 @@ for (const e of all) {
   if (e.type === "login" && e.honeytoken) depth[e.ip] = Math.max(depth[e.ip] || 0, 5);
 }
 const logins = all.filter(e => e.type === "login" && !MY_IPS.includes(e.ip));
-
-// ---------- SUMMARY ----------
 
 const count = (arr, key) => {
   const m = {};
@@ -134,18 +114,14 @@ say("\nBreadcrumb depth (deepest step reached per IP; 1=robots.txt 3=backup 4=.e
 count(Object.entries(depth), ([, d]) => "step " + d).sort().forEach(([k, v]) => say(`  ${k}: ${v} IPs`));
 say(`\nLogin attempts: ${logins.length}   using a planted honeytoken: ${logins.filter(l => l.honeytoken).length}   successful: ${logins.filter(l => l.success).length}`);
 
-// ---------- WRITE FILES ----------
-
 fs.mkdirSync(__dirname + "/results", { recursive: true });
 fs.writeFileSync(__dirname + "/results/labeled.json", JSON.stringify(labeled, null, 2));
 fs.writeFileSync(__dirname + "/results/unknown.json", JSON.stringify(byCat.unknown, null, 2));
 fs.writeFileSync(__dirname + "/results/summary.txt", out);
 
-// CSV of category counts (for a chart)
 fs.writeFileSync(__dirname + "/results/category_counts.csv",
   "category,requests,unique_ips\n" + cats.map(c => `${c},${byCat[c].length},${new Set(byCat[c].map(x => x.ip)).size}`).join("\n") + "\n");
 
-// Random sample for manual checking (step 4: measure accuracy)
 const pool = labeled.filter(x => x.category !== "unknown");
 const sample = pool.sort(() => Math.random() - 0.5).slice(0, 30);
 const esc = v => '"' + String(v || "").replace(/"/g, '""') + '"';
